@@ -1,44 +1,46 @@
 import React from "react";
-import * as eva from "@eva-design/eva";
-import { ApplicationProvider, IconRegistry } from "@ui-kitten/components";
-import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { Provider as StoreProvider } from "react-redux";
+import { Provider as PaperProvider } from "react-native-paper";
 import { PersistGate } from "redux-persist/integration/react";
+import { NavigationContainer } from "@react-navigation/native";
 
-import { AppNavigator } from "./src/navigation/AppNavigator";
-
-import { default as customTheme } from "./src/theme/custom-theme-royal-blue.json";
-import { ThemeContext } from "./src/theme/theme-context";
+import { ThemeContext } from "./src/theme/ThemeContext";
+import Loader from "./src/components/common/Loader";
+import { LightTheme, DarkTheme } from "./src/theme/CustomTheme";
 
 import { store, persistor } from "./src/store";
-import Loader from "./src/components/common/Loader";
+import AppNavigator from "./src/navigation/AppNavigator";
 
-export default () => {
-  const [theme, setTheme] = React.useState("light");
+export default function App() {
+  const [isThemeDark, setIsThemeDark] = React.useState(false);
 
-  const toggleTheme = () => {
-    const nextTheme = theme === "light" ? "dark" : "light";
-    setTheme(nextTheme);
-  };
+  let theme = isThemeDark ? DarkTheme : LightTheme;
+
+  const toggleTheme = React.useCallback(() => {
+    return setIsThemeDark(!isThemeDark);
+  }, [isThemeDark]);
 
   const preferences = React.useMemo(
     () => ({
-      theme,
       toggleTheme,
+      isThemeDark,
     }),
-    [theme, toggleTheme]
+    [toggleTheme, isThemeDark]
   );
 
   return (
-    <StoreProvider store={store}>
-      <ThemeContext.Provider value={preferences}>
-        <IconRegistry icons={EvaIconsPack} />
-        <ApplicationProvider {...eva} theme={{ ...eva[theme], ...customTheme }}>
-          <PersistGate loading={<Loader />} persistor={persistor}>
-            <AppNavigator />
-          </PersistGate>
-        </ApplicationProvider>
-      </ThemeContext.Provider>
-    </StoreProvider>
+    <React.Suspense fallback={<Loader />}>
+      <StoreProvider store={store}>
+        <PersistGate loading={<Loader />} persistor={persistor}>
+          <ThemeContext.Provider value={preferences}>
+            <PaperProvider theme={theme}>
+              <NavigationContainer theme={theme}>
+                <AppNavigator />
+              </NavigationContainer>
+            </PaperProvider>
+          </ThemeContext.Provider>
+        </PersistGate>
+      </StoreProvider>
+    </React.Suspense>
   );
-};
+}

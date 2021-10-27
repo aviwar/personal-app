@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import TransactionList from "../components/TransactionList";
 
@@ -7,7 +7,9 @@ const TransactionsScreen = ({ navigation }) => {
   const transactions = useSelector((state) => state.transactions);
 
   const goToTransactionDetail = (id) => {
-    navigation.navigate("TransactionDetail");
+    navigation.navigate("TransactionDetail", {
+      id: id,
+    });
   };
 
   const goToAddTransaction = () => {

@@ -1,11 +1,99 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
+import ContactList from "../components/ContactList";
+import { LoadContacts } from "../utils";
+
+import { addContact, deleteContact } from "../store/transactionSlice";
+
+const initialContacts = [
+  {
+    id: 1,
+    name: "A 1",
+  },
+  {
+    id: 2,
+    name: "B 1",
+  },
+  {
+    id: 3,
+    name: "C 1",
+  },
+];
+
+// const initialContacts = [];
 
 const AddTransaction = ({ navigation }) => {
-  const goToTransactions = (id) => {
-    navigation.navigate("Transactions");
+  const transactions = useSelector((state) => state.transactions);
+  const dispatch = useDispatch();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchKey, setSearchKey] = useState("");
+  const [contacts, setcontacts] = useState(initialContacts);
+  const [tempContacts, setTempContacts] = useState(initialContacts);
+
+  const loadContacts = async () => {
+    const loadedContacts = await LoadContacts();
+    setcontacts(loadedContacts);
+    setTempContacts(loadedContacts);
+    setIsLoading(false);
   };
 
-  return "";
+  const searchContacts = (value) => {
+    setSearchKey(value);
+
+    const filteredContacts = tempContacts.filter((contact) => {
+      let contactLowercase = contact.name.toLowerCase();
+      let searchTermLowercase = value.toLowerCase();
+
+      return contactLowercase.indexOf(searchTermLowercase) > -1;
+    });
+
+    setcontacts(filteredContacts);
+  };
+
+  useEffect(() => {
+    // setIsLoading(true);
+    // loadContacts();
+  }, []);
+
+  const goToTransactionDetail = (id) => {
+    navigation.navigate("TransactionDetail", {
+      id: id,
+    });
+  };
+
+  const handleContactOnPress = (contact) => {
+    const isContactExist = checkContactExist(contact);
+
+    if (!isContactExist) {
+      const contactData = {
+        id: contact.id,
+        name: contact.name,
+        balance: 0,
+        data: [],
+      };
+
+      dispatch(addContact(contactData));
+      // dispatch(deleteContact(contact.id));
+    }
+
+    goToTransactionDetail(contact.id);
+  };
+
+  const checkContactExist = (obj) => {
+    return transactions.some((transaction) => transaction.id === obj.id);
+  };
+
+  return (
+    <ContactList
+      isLoading={isLoading}
+      searchKey={searchKey}
+      contacts={contacts}
+      searchContacts={searchContacts}
+      handleContactOnPress={handleContactOnPress}
+    />
+  );
 };
 
 export default AddTransaction;

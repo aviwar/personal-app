@@ -1,43 +1,39 @@
 import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {
-  BottomNavigation,
-  BottomNavigationTab,
-  Icon,
-} from "@ui-kitten/components";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 
 import HomeScreen from "../screens/Home";
 import TransactionsScreen from "../screens/Transactions";
 
-const HomeIcon = (props) => <Icon {...props} name="home-outline" />;
-const BellIcon = (props) => <Icon {...props} name="bell-outline" />;
-const EmailIcon = (props) => <Icon {...props} name="email-outline" />;
+const { Navigator, Screen } = createMaterialBottomTabNavigator();
 
-const { Navigator, Screen } = createBottomTabNavigator();
-
-const BottomTabBar = ({ navigation, state }) => (
-  <BottomNavigation
-    selectedIndex={state.index}
-    onSelect={(index) => navigation.navigate(state.routeNames[index])}
-  >
-    <BottomNavigationTab icon={HomeIcon} title="HOME" />
-    <BottomNavigationTab icon={EmailIcon} title="TRANSACTIONS" />
-    <BottomNavigationTab icon={BellIcon} title="REMINDERS" />
-  </BottomNavigation>
-);
-
-const BottomTabNavigator = () => {
+const BottomTabNavigator = (props) => {
   return (
     <Navigator
       initialRouteName="Transactions"
-      tabBar={(props) => <BottomTabBar {...props} />}
-      screenOptions={{
-        headerShown: false,
-      }}
+      shifting={true}
+      sceneAnimationEnabled={false}
     >
-      <Screen name="Home" component={HomeScreen} />
-      <Screen name="Transactions" component={TransactionsScreen} />
-      <Screen name="Reminders" component={HomeScreen} />
+      <Screen
+        name="Home"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: "home-account",
+        }}
+      />
+      <Screen
+        name="Transactions"
+        component={TransactionsScreen}
+        options={{
+          tabBarIcon: "account-multiple",
+        }}
+      />
+      <Screen
+        name="Reminders"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: "account-multiple",
+        }}
+      />
     </Navigator>
   );
 };

@@ -1,56 +1,60 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = [
-  {
-    id: 1,
-    name: "A",
-    data: [
-      {
-        id: 1,
-        amount: 1000,
-        // date:
-      },
-      {
-        id: 2,
-        amount: -1000,
-        // date:
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "B",
-    data: [
-      {
-        id: 3,
-        amount: 1000,
-      },
-      {
-        id: 4,
-        amount: -500,
-      },
-    ],
-  },
-];
+// const initialState = [
+//   {
+//     id: 1,
+//     name: "A",
+//     balance: 100,
+//     data: [
+//       {
+//         id: 1,
+//         amount: 1000,
+//         status: "",
+//         date: "",
+//       },
+//       {
+//         id: 2,
+//         amount: -1000,
+//         status: "",
+//         date: "",
+//       },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     name: "B",
+//     balance: 100,
+//     data: [
+//       {
+//         id: 3,
+//         amount: 1000,
+//         status: "",
+//         date: "",
+//       },
+//       {
+//         id: 4,
+//         amount: -500,
+//         status: "",
+//         date: "",
+//       },
+//     ],
+//   },
+// ];
 
+const initialState = [];
 export const transactionSlice = createSlice({
-  name: "counter",
+  name: "transactions",
   initialState,
   reducers: {
-    increment: (state) => {
-      state.value += 1;
+    addContact: (state, action) => {
+      state.push(action.payload);
     },
-    decrement: (state) => {
-      state.value -= 1;
-    },
-    incrementByAmount: (state, action) => {
-      state.value += action.payload;
+    deleteContact: (state, action) => {
+      return state.filter((transaction) => transaction.id !== action.payload);
     },
   },
 });
 
-// Action creators are generated for each case reducer function
-export const { increment, decrement, incrementByAmount } =
-  transactionSlice.actions;
+export const { addContact, deleteContact } = transactionSlice.actions;
 
 export default transactionSlice.reducer;

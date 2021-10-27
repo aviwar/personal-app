@@ -1,42 +1,27 @@
 import React from "react";
-import {
-  Icon,
-  Divider,
-  TopNavigation,
-  TopNavigationAction,
-  Button,
-} from "@ui-kitten/components";
+import { useTheme, Appbar } from "react-native-paper";
 
-import { ThemeContext } from "../theme/theme-context";
+import { ThemeContext } from "../theme/ThemeContext";
 
-const BackIcon = (props) => <Icon {...props} name="arrow-back" />;
-
-const BackAction = (props) => (
-  <TopNavigationAction {...props} icon={BackIcon} />
-);
-
-const ToggleAction = ({ theme, toggleTheme }) => {
-  const toggleIcon = (
-    <Icon name={theme === "light" ? "sun-outline" : "moon-outline"} />
-  );
-
-  return <TopNavigationAction icon={toggleIcon} onPress={toggleTheme} />;
-};
 const TopNavigator = ({ navigation, back }) => {
-  const { theme, toggleTheme } = React.useContext(ThemeContext);
+  const theme = useTheme();
+  const { toggleTheme, isThemeDark } = React.useContext(ThemeContext);
 
   return (
-    <>
-      <TopNavigation
-        alignment="center"
-        title="Personal App"
-        accessoryLeft={back ? <BackAction onPress={navigation.goBack} /> : null}
-        accessoryRight={
-          <ToggleAction theme={theme} toggleTheme={toggleTheme} />
-        }
+    <Appbar.Header
+      theme={{
+        colors: {
+          primary: theme?.colors.surface,
+        },
+      }}
+    >
+      {back ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
+      <Appbar.Content title="Personal App" />
+      <Appbar.Action
+        icon={isThemeDark ? "brightness-7" : "brightness-3"}
+        onPress={() => toggleTheme()}
       />
-      <Divider />
-    </>
+    </Appbar.Header>
   );
 };
 

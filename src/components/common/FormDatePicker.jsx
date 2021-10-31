@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Keyboard, StyleSheet, View } from "react-native";
 import { TextInput, TouchableRipple } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -9,12 +9,16 @@ const FormDatePicker = ({ label, value, onChange, error }) => {
   const [visible, setVisible] = useState(false);
   const [displayValue, setDisplayValue] = useState(FormatDate(value));
 
+  useEffect(() => {
+    setDisplayValue(FormatDate(value));
+  }, [value]);
+
   const handleDatepickerChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    const formattedDate = FormatDate(currentDate);
+    const currentDate = selectedDate || displayValue;
+
     setVisible(false);
-    setDisplayValue(formattedDate);
-    onChange(formattedDate);
+    setDisplayValue(FormatDate(currentDate));
+    onChange(currentDate);
   };
 
   return (

@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { DataTable, IconButton } from "react-native-paper";
 
 import { FormatDate } from "../utils";
 
 const TransactionDataItem = ({
+  transactionId,
   transaction,
   handleEditClick,
   handleDeleteClick,
 }) => {
+  const [visible, setVisible] = useState(false);
+
   return (
     <DataTable.Row>
       <DataTable.Cell style={{ flex: 1.5 }}>
@@ -19,7 +22,7 @@ const TransactionDataItem = ({
         <IconButton
           icon="pencil"
           onPress={() => {
-            handleEditClick(transaction.id);
+            handleEditClick(transactionId, transaction.id);
           }}
         />
         <IconButton

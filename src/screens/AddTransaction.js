@@ -4,24 +4,24 @@ import { useSelector, useDispatch } from "react-redux";
 import ContactList from "../components/ContactList";
 import { LoadContacts } from "../utils";
 
-import { addContact, deleteContact } from "../store/transactionSlice";
+import { addContact } from "../store/transactionSlice";
 
-const initialContacts = [
-  {
-    id: 1,
-    name: "A 1",
-  },
-  {
-    id: 2,
-    name: "B 1",
-  },
-  {
-    id: 3,
-    name: "C 1",
-  },
-];
+// const initialContacts = [
+//   {
+//     id: 1,
+//     name: "A 1",
+//   },
+//   {
+//     id: 2,
+//     name: "B 1",
+//   },
+//   {
+//     id: 3,
+//     name: "C 1",
+//   },
+// ];
 
-// const initialContacts = [];
+const initialContacts = [];
 
 const AddTransaction = ({ navigation }) => {
   const transactions = useSelector((state) => state.transactions);
@@ -53,12 +53,12 @@ const AddTransaction = ({ navigation }) => {
   };
 
   useEffect(() => {
-    // setIsLoading(true);
-    // loadContacts();
+    setIsLoading(true);
+    loadContacts();
   }, []);
 
-  const goToTransactionDetail = (id) => {
-    navigation.navigate("TransactionDetail", {
+  const goToTransactionForm = (id) => {
+    navigation.replace("TransactionForm", {
       id: id,
     });
   };
@@ -78,7 +78,7 @@ const AddTransaction = ({ navigation }) => {
       // dispatch(deleteContact(contact.id));
     }
 
-    goToTransactionDetail(contact.id);
+    goToTransactionForm(contact.id);
   };
 
   const checkContactExist = (obj) => {

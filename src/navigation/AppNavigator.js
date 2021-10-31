@@ -22,7 +22,7 @@ const AppNavigator = () => (
     <Screen name="BottomTab" component={BottomTabNavigator} />
     <Screen name="TransactionDetail" component={TransactionDetail} />
     <Screen name="AddTransaction" component={AddTransaction} />
-    <Screen name="TransactionData" component={TransactionFormScreen} />
+    <Screen name="TransactionForm" component={TransactionFormScreen} />
   </Navigator>
 );
 

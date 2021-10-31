@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { SafeAreaView, StyleSheet, View } from "react-native";
-import { Surface, Button, Title } from "react-native-paper";
+import React, { useEffect, useState } from "react";
+import { SafeAreaView, StyleSheet } from "react-native";
+import { Surface, Title } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
 
 import FormInput from "../components/common/FormInput";
@@ -19,16 +19,43 @@ const formOptions = [
   },
 ];
 
-const TransactionForm = (props) => {
+const TransactionForm = ({
+  transactionId,
+  transactionDataId,
+  transactionData,
+  handleFormSubmit,
+}) => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors, isValid },
-  } = useForm({ mode: "onBlur" });
+  } = useForm({
+    defaultValues: {
+      amount: "",
+      type: "",
+      date: new Date(),
+    },
+    mode: "onBlur",
+  });
 
-  const onSubmit = (data) => console.log(data);
+  const resetDefaultFormValues = (data) => {
+    const updatedValues = {
+      amount: Math.abs(data.amount).toString(),
+      type: data.type,
+      date: new Date(data.date),
+    };
 
-  const formTitle = props.id ? "Update" : "Add";
+    reset(updatedValues);
+  };
+
+  useEffect(() => {
+    if (transactionDataId && Object.keys(transactionData).length > 0) {
+      resetDefaultFormValues(transactionData);
+    }
+  }, [transactionDataId, transactionData]);
+
+  const formTitle = transactionDataId ? "Update" : "Add";
 
   return (
     <Surface style={styles.containerStyle}>
@@ -38,14 +65,13 @@ const TransactionForm = (props) => {
         <Controller
           control={control}
           name="amount"
-          defaultValue=""
           render={({ field: { onChange, value, onBlur } }) => (
             <FormInput
               keyboardType="numeric"
               labelName="Amount"
               value={value}
               autoCapitalize="none"
-              onChangeText={(value) => onChange(value)}
+              onChangeText={onChange}
               onBlur={onBlur}
               error={errors.amount}
             />
@@ -61,12 +87,11 @@ const TransactionForm = (props) => {
         <Controller
           control={control}
           name="type"
-          defaultValue=""
           render={({ field: { onChange, value, onBlur } }) => (
             <FormSelect
               label="Transaction Type"
               options={formOptions}
-              onChange={(value) => onChange(value)}
+              onChange={onChange}
               value={value}
               error={errors.type}
             />
@@ -82,13 +107,8 @@ const TransactionForm = (props) => {
         <Controller
           control={control}
           name="date"
-          defaultValue={new Date()}
           render={({ field: { onChange, value } }) => (
-            <FormDatePicker
-              label="Date"
-              value={value}
-              onChange={(value) => onChange(value)}
-            />
+            <FormDatePicker label="Date" value={value} onChange={onChange} />
           )}
         />
 
@@ -96,7 +116,7 @@ const TransactionForm = (props) => {
           title="Submit"
           modeValue="contained"
           labelStyle={styles.formButtonLabel}
-          onPress={handleSubmit(onSubmit)}
+          onPress={handleSubmit(handleFormSubmit)}
           error={true}
         />
       </SafeAreaView>

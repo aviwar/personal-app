@@ -3,27 +3,43 @@ import { useSelector, useDispatch } from "react-redux";
 
 import TransactionDetail from "../components/TransactionDetail";
 
+import {
+  deleteTransaction,
+  deleteTransactionData,
+} from "../store/transactionSlice";
+
 const TransactionDetailScreen = ({ route, navigation }) => {
   const { id } = route.params;
   const transactions = useSelector((state) => state.transactions);
 
   const [transaction, setTransaction] = useState({});
 
-  const userBalance = transaction.balance ? Math.abs(transaction.balance) : 0;
-  const userStatus = transaction.balance < 0 ? "You'll get" : "You'll give";
+  const dispatch = useDispatch();
 
   const goToTransactions = () => {
     navigation.navigate("Transactions");
   };
 
-  const goToTransactionForm = (userId) => {
-    navigation.navigate("TransactionData", {
-      userId: userId,
+  const goToTransactionForm = (id, transactionDataId) => {
+    navigation.navigate("TransactionForm", {
+      id: id,
+      transactionDataId: transactionDataId,
     });
   };
 
-  const filterTransaction = (userId) => {
-    const res = transactions.find(({ id }) => id === userId);
+  const handleDeleteTransaction = (id) => {
+    dispatch(deleteTransaction(id));
+    goToTransactions();
+  };
+
+  const updateTransactionData = (id, data) => {};
+
+  const handleDeleteTransactionData = (id, transactionDataId) => {
+    dispatch(deleteTransactionData({ id, transactionDataId }));
+  };
+
+  const filterTransaction = (transactionId) => {
+    const res = transactions.find(({ id }) => id === transactionId);
 
     if (!res) {
       goToTransactions();
@@ -34,16 +50,15 @@ const TransactionDetailScreen = ({ route, navigation }) => {
 
   useEffect(() => {
     filterTransaction(id);
-  }, []);
+  }, [transactions]);
 
   return (
     <TransactionDetail
-      userId={transaction.id}
-      userName={transaction.name}
-      userBalance={userBalance}
-      userStatus={userStatus}
-      transactionData={transaction.data}
+      transaction={transaction}
       goToTransactionForm={goToTransactionForm}
+      handleDeleteTransaction={handleDeleteTransaction}
+      updateTransactionData={updateTransactionData}
+      handleDeleteTransactionData={handleDeleteTransactionData}
     />
   );
 };

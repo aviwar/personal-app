@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import {
   Avatar,
@@ -14,54 +13,51 @@ import FabComponent from "../components/common/FabComponent";
 import CardComponent from "../components/common/CardComponent";
 import TransactionDataItem from "./TransactionDataItem";
 
-// import {
-//   deleteTransaction,
-//   deleteUserTransactions,
-//   deleteUser,
-//   updateUserBalance,
-// } from "../store/actions";
-
 const TransactionDetail = ({
-  userId,
-  userName,
-  userBalance,
-  userStatus,
-  transactionData,
+  transaction,
   goToTransactionForm,
+  handleDeleteTransaction,
+  updateTransactionData,
+  handleDeleteTransactionData,
 }) => {
-  const [dialogVisible, setDialogVisible] = useState(false);
+  const { id, balance, data: transactionData } = transaction;
+
+  const [visibleContact, setVisibleContact] = useState(false);
+  const [visibleTransaction, setVisibleTransaction] = useState(false);
+  const [transactionDataId, setTransactionDataId] = useState("");
+
+  const transactionBalance = balance ? Math.abs(balance) : 0;
+  const transactionStatus = balance < 0 ? "You'll get" : "You'll give";
 
   const handleUserDeleteClick = () => {
-    setDialogVisible(!dialogVisible);
+    setVisibleContact(!visibleContact);
   };
 
-  const handleTransactionEditClick = (transactionId) => {
-    navigation.push("TransactionForm", {
-      id: transactionId,
-      userId: userId,
-    });
+  const handleContactDialogConfirm = () => {
+    setVisibleContact(!visibleContact);
+
+    handleDeleteTransaction(id);
   };
 
-  const handleTransactionDeleteClick = (transactionId) => {
-    setDialogVisible(!dialogVisible);
-    setTransactionId(transactionId);
+  const handleContactDialogCancel = () => {
+    setVisibleContact(!visibleContact);
   };
 
-  const handleDialogCancelPress = () => {
-    setDialogVisible(!dialogVisible);
+  const handleTransactionDeleteClick = (transactionDataId) => {
+    setVisibleTransaction(!visibleTransaction);
+
+    setTransactionDataId(transactionDataId);
   };
 
-  const handleDialogConfirmPress = () => {
-    setDialogVisible(!dialogVisible);
+  const handleTransactionDialogConfirm = () => {
+    setVisibleTransaction(!visibleTransaction);
+    handleDeleteTransactionData(id, transactionDataId);
+    setTransactionDataId("");
+  };
 
-    if (transactionId) {
-      dispatch(deleteTransaction(transactionId));
-      dispatch(updateUserBalance(userId));
-      setTransactionId("");
-    } else {
-      dispatch(deleteUserTransactions(userId));
-      dispatch(deleteUser(userId));
-    }
+  const handleTransactionDialogCancel = () => {
+    setVisibleTransaction(!visibleTransaction);
+    setTransactionDataId("");
   };
 
   const userHeaderRightContent = () => {
@@ -76,27 +72,34 @@ const TransactionDetail = ({
     <Surface style={styles.containerStyle}>
       <SafeAreaView style={styles.safeContainerStyle}>
         <ScrollView>
+          <DialogComponent
+            visible={visibleContact}
+            dialogContent="Are you sure you want to delete the contact's transactions?"
+            handleDialogCancelPress={handleContactDialogCancel}
+            handleDialogConfirmPress={handleContactDialogConfirm}
+          />
+
           <CardComponent
             style={styles.userHeader}
-            title={userName}
+            title={transaction.name}
             left={(props) => <Avatar.Icon {...props} icon="account-circle" />}
             right={userHeaderRightContent}
           />
 
-          {userBalance > 0 && (
+          {transactionBalance > 0 && (
             <CardComponent
               style={styles.transactionList}
-              title={userBalance}
-              subtitle={userStatus}
+              title={transactionBalance}
+              subtitle={transactionStatus}
               left={(props) => <Avatar.Icon {...props} icon="currency-inr" />}
             />
           )}
 
           <DialogComponent
-            visible={dialogVisible}
-            dialogContent="Are u sure?"
-            handleDialogCancelPress={handleDialogCancelPress}
-            handleDialogConfirmPress={handleDialogConfirmPress}
+            visible={visibleTransaction}
+            dialogContent="Are you sure you want to delete?"
+            handleDialogCancelPress={handleTransactionDialogCancel}
+            handleDialogConfirmPress={handleTransactionDialogConfirm}
           />
 
           <DataTable>
@@ -107,11 +110,12 @@ const TransactionDetail = ({
               <DataTable.Title style={{ flex: 2 }}>Action</DataTable.Title>
             </DataTable.Header>
             {transactionData && transactionData.length > 0 ? (
-              transactionData.map((transaction) => (
+              transactionData.map((transaction, index) => (
                 <TransactionDataItem
-                  key={transaction.id}
+                  key={index}
+                  transactionId={id}
                   transaction={transaction}
-                  handleEditClick={handleTransactionEditClick}
+                  handleEditClick={goToTransactionForm}
                   handleDeleteClick={handleTransactionDeleteClick}
                 />
               ))
@@ -126,7 +130,7 @@ const TransactionDetail = ({
         <FabComponent
           icon="plus"
           onPress={() => {
-            goToTransactionForm(userId);
+            goToTransactionForm(id);
           }}
         />
       </SafeAreaView>

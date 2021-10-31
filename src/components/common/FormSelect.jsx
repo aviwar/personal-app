@@ -1,7 +1,6 @@
 import React, { Fragment, useCallback, useState, useEffect } from "react";
 import { Keyboard, StyleSheet, View } from "react-native";
 import {
-  Button,
   Menu,
   Divider,
   HelperText,

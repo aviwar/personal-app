@@ -1,5 +1,4 @@
 import React from "react";
-// import { useSelector, useDispatch } from "react-redux";
 import { SafeAreaView, StyleSheet, ScrollView } from "react-native";
 import { Surface, Text } from "react-native-paper";
 

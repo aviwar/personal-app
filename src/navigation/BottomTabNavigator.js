@@ -24,14 +24,14 @@ const BottomTabNavigator = (props) => {
         name="Transactions"
         component={TransactionsScreen}
         options={{
-          tabBarIcon: "account-multiple",
+          tabBarIcon: "currency-inr",
         }}
       />
       <Screen
         name="Reminders"
         component={HomeScreen}
         options={{
-          tabBarIcon: "account-multiple",
+          tabBarIcon: "bell",
         }}
       />
     </Navigator>

@@ -9,7 +9,7 @@ const { Navigator, Screen } = createMaterialBottomTabNavigator();
 const BottomTabNavigator = (props) => {
   return (
     <Navigator
-      initialRouteName="Transactions"
+      initialRouteName="Home"
       shifting={true}
       sceneAnimationEnabled={false}
     >

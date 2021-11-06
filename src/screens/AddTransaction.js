@@ -19,6 +19,34 @@ import { addContact } from "../store/transactionSlice";
 //     id: 3,
 //     name: "C 1",
 //   },
+//   {
+//     id: 4,
+//     name: "D 1",
+//   },
+//   {
+//     id: 5,
+//     name: "E 1",
+//   },
+//   {
+//     id: 6,
+//     name: "F 1",
+//   },
+//   {
+//     id: 7,
+//     name: "G 1",
+//   },
+//   {
+//     id: 8,
+//     name: "H 1",
+//   },
+//   {
+//     id: 9,
+//     name: "I 1",
+//   },
+//   {
+//     id: 10,
+//     name: "J 1",
+//   },
 // ];
 
 const initialContacts = [];
@@ -75,7 +103,6 @@ const AddTransaction = ({ navigation }) => {
       };
 
       dispatch(addContact(contactData));
-      // dispatch(deleteContact(contact.id));
     }
 
     goToTransactionForm(contact.id);
